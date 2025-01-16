@@ -1,4 +1,3 @@
-import os
 import logging
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
@@ -9,10 +8,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Ваш токен бота
-TOKEN = os.getenv('7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU')
+TOKEN = '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU'
 
 # ID учителя
-TEACHER_CHAT_ID = os.getenv('1139235921')
+TEACHER_CHAT_ID = '1139235921'
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text('Привет! Отправьте мне cвоё домашние задание и я перешлю его учителю. '
