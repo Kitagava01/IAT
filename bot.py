@@ -14,9 +14,9 @@ TOKEN = '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU'
 TEACHER_CHAT_ID = '1139235921'
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('Привет! Отправьте мне cвоё домашние задание и я перешлю его учителю. '
-                              'При отправление укажи группу, ФИО. Также стоит указать на какое число было задано домашнее задание, если это долг, то пиши на какую дату и то что это долг.'
-                              'Также если вы отправляете код то пишите его так: ```py (ваш код) ``` ')
+    await update.message.reply_text('Привет! Отправьте мне своё домашнее задание и я перешлю его учителю. '
+                                     'При отправлении укажите группу, ФИО. Также стоит указать на какое число было задано домашнее задание, если это долг, то пишите на какую дату и то, что это долг. '
+                                     'Также если вы отправляете код, то пишите его так: ```py (ваш код) ``` ')
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.message.from_user
@@ -76,10 +76,9 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     application.add_handler(MessageHandler(filters.Document.MimeType("application/pdf"), handle_document))
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-  
+
     # Запускаем бота
     application.run_polling()
 
 if __name__ == '__main__':
     main()
-
