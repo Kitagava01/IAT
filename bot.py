@@ -50,6 +50,23 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     # Подтверждаем получение документа от ученика
     await update.message.reply_text('Ваше домашнее задание отправлено учителю.')
 
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.message.from_user
+    user_nickname = user.username if user.username else user.first_name
+    date_time = update.message.date
+
+    # Получаем фото
+    photo = update.message.photo[-1]  # Берем самое большое изображение
+    file = await context.bot.get_file(photo.file_id)
+    await file.download_to_drive(f"{photo.file_id}.jpg")
+
+    # Отправляем фото учителю
+    await context.bot.send_photo(chat_id=TEACHER_CHAT_ID, photo=InputFile(f"{photo.file_id}.jpg"),
+                                 caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
+
+    # Подтверждаем получение фото от ученика
+    await update.message.reply_text('Ваше домашнее задание отправлено учителю.')
+
 def main() -> None:
     # Создаем приложение и передаем ему токен вашего бота.
     application = ApplicationBuilder().token(TOKEN).build()
