@@ -14,7 +14,7 @@ TOKEN = '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU'
 TEACHER_CHAT_ID = '1139235921'
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('Привет! Отправьте мне твоё домашние задание и я перешлю его учителю. '
+    await update.message.reply_text('Привет! Отправьте мне cвоё домашние задание и я перешлю его учителю. '
                               'При отправление укажи группу, ФИО. Также стоит указать на какое число было задано домашнее задание, если это долг, то пиши на какую дату и то что это долг.'
                               'Также если вы отправляете код то пишите его так: ```py (ваш код) ``` ')
 
