@@ -58,10 +58,10 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     # Получаем фото
     photo = update.message.photo[-1]  # Берем самое большое изображение
     file = await context.bot.get_file(photo.file_id)
-    await file.download_to_drive(f"{photo.file_id}.jpg")
+    await file.download_to_drive(f"{photo.file_id}.png")
 
     # Отправляем фото учителю
-    await context.bot.send_photo(chat_id=TEACHER_CHAT_ID, photo=InputFile(f"{photo.file_id}.jpg"),
+    await context.bot.send_photo(chat_id=TEACHER_CHAT_ID, photo=InputFile(f"{photo.file_id}.png"),
                                  caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
 
     # Подтверждаем получение фото от ученика
