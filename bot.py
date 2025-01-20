@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 TOKEN = '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU'
 
 # ID учителя
-TEACHER_CHAT_ID = '1139235921'
+TEACHER_CHAT_ID = '867184619'
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text('Привет! Отправьте мне своё домашнее задание и я перешлю его учителю. '
