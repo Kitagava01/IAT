@@ -1,3 +1,4 @@
+import os
 import logging
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
@@ -8,10 +9,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Ваш токен бота
-TOKEN = '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU'
+TOKEN = os.getenv('TOKEN', '7860849361:AAGBhe8yssIWvCtVCii2qTGpqWVg5sZc_rU')
 
 # ID учителя
-TEACHER_CHAT_ID = '867184619'
+TEACHER_CHAT_ID = os.getenv('TEACHER_CHAT_ID', '867184619')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text('Привет! Отправьте мне своё домашнее задание и я перешлю его учителю. '
@@ -41,14 +42,18 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     # Получаем документ
     document = update.message.document
     file = await context.bot.get_file(document.file_id)
-    await file.download_to_drive(document.file_name)
+    file_path = f"{document.file_id}.pdf"
+    await file.download_to_drive(file_path)
 
     # Отправляем документ учителю
-    await context.bot.send_document(chat_id=TEACHER_CHAT_ID, document=InputFile(document.file_name),
-                                    caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
+    await context.bot.send_document(chat_id=TEACHER_CHAT_ID, document=InputFile(file_path),
+                                     caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
 
     # Подтверждаем получение документа от ученика
     await update.message.reply_text('Ваше домашнее задание отправлено учителю.')
+
+    # Удаляем временный файл
+    os.remove(file_path)
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.message.from_user
@@ -58,14 +63,18 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     # Получаем фото
     photo = update.message.photo[-1]  # Берем самое большое изображение
     file = await context.bot.get_file(photo.file_id)
-    await file.download_to_drive(f"{photo.file_id}.png")
+    file_path = f"{photo.file_id}.jpg"
+    await file.download_to_drive(file_path)
 
     # Отправляем фото учителю
-    await context.bot.send_photo(chat_id=TEACHER_CHAT_ID, photo=InputFile(f"{photo.file_id}.png"),
-                                 caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
+    await context.bot.send_photo(chat_id=TEACHER_CHAT_ID, photo=InputFile(file_path),
+                                  caption=f"Домашнее задание от {user_nickname}\nДата и время отправки: {date_time}")
 
     # Подтверждаем получение фото от ученика
     await update.message.reply_text('Ваше домашнее задание отправлено учителю.')
+
+    # Удаляем временный файл
+    os.remove(file_path)
 
 def main() -> None:
     # Создаем приложение и передаем ему токен вашего бота.
@@ -74,7 +83,7 @@ def main() -> None:
     # Регистрируем обработчики
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    application.add_handler(MessageHandler(filters.Document.MimeType("application/pdf"), handle_document))
+    application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
 
     # Запускаем бота
